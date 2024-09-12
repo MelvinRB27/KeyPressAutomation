@@ -22,4 +22,4 @@
 1. **Clonar el Repositorio**
 
    ```bash
-   git clone https://github.com/tu-usuario/keypress-automation.git
+   git clone https://github.com/MelvinRB27/KeyPressAutomation.git
