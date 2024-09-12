@@ -1,0 +1,62 @@
+# Archivos generados por el sistema
+.log
+.suo
+.user
+.userosscache
+.suo
+.tlog
+.pdb
+.cache
+.dbmdl
+.bak
+
+# Archivos de compilación
+bin
+obj
+Debug
+Release
+x64
+x86
+
+# Archivos de configuración de usuario
+.suo
+.user
+.userosscache
+.suo
+.wixproj
+.wixpdb
+
+# Archivos específicos de Visual Studio
+.vs
+.csproj.user
+.csproj.lock
+.dbmdl
+
+# Archivos temporales
+.tmp
+.temp
+.swp
+.swo
+
+# Archivos generados por el sistema de compilación
+.dll
+.exe
+.pdb
+.cache
+.log
+
+# Archivos de configuración de paquetes NuGet
+packages
+.nupkg
+.nuspec
+
+# Archivos de configuración de NuGet
+.nuget
+# Archivos generados por las herramientas de construcción
+.generated.cs
+
+# Configuración de entornos de desarrollo
+.vscode
+
+# Archivos de publicación de Web
+.publish
