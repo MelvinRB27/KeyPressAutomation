@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Timer = System.Windows.Forms.Timer;
 
@@ -51,45 +51,45 @@ namespace KeyPressAutomation
             timer.Tick += Timer_Tick;
         }
 
-        private void Timer_Tick(object sender, EventArgs e)
+        private async void Timer_Tick(object sender, EventArgs e)
         {
             secondCounter++;  // Incrementar el contador de segundos
 
             // Actualizar el label con el valor de segundos
             this.label_seconds.Text = secondCounter.ToString();
 
-            // Si el segundo actual es múltiplo del intervalo ingresado, cambiar a azul
+            // Solo presionar la tecla si el segundo actual es múltiplo del intervalo
             if (secondCounter % intervalInSeconds == 0)
             {
                 this.label_seconds.ForeColor = System.Drawing.Color.Blue;
+
+                // Obtener la tecla y el modificador seleccionados
+                string selectedKey = comboBoxKeys.SelectedItem.ToString();
+                string selectedModifier = comboBoxModifiers.SelectedItem.ToString();
+
+                byte virtualKeyCode = GetVirtualKeyCode(selectedKey);
+                byte modifierKeyCode = GetModifierKeyCode(selectedModifier);
+
+                // Aplicar modificadores
+                if (modifierKeyCode != 0)
+                {
+                    keybd_event(modifierKeyCode, 0, KEYEVENTF_KEYDOWN, 0); // Presionar modificador
+                }
+
+                // Simular la pulsación de la tecla
+                keybd_event(virtualKeyCode, 0, KEYEVENTF_KEYDOWN, 0); // Presionar la tecla
+                await Task.Delay(100); // Simular una pequeña espera sin bloquear el hilo
+                keybd_event(virtualKeyCode, 0, KEYEVENTF_KEYUP, 0);   // Soltar la tecla
+
+                // Liberar modificadores
+                if (modifierKeyCode != 0)
+                {
+                    keybd_event(modifierKeyCode, 0, KEYEVENTF_KEYUP, 0); // Soltar modificador
+                }
             }
             else
             {
-                this.label_seconds.ForeColor = System.Drawing.Color.Black; // Color normal para otros segundos
-            }
-
-            // Obtener la tecla y el modificador seleccionados
-            string selectedKey = comboBoxKeys.SelectedItem.ToString();
-            string selectedModifier = comboBoxModifiers.SelectedItem.ToString();
-
-            byte virtualKeyCode = GetVirtualKeyCode(selectedKey);
-            byte modifierKeyCode = GetModifierKeyCode(selectedModifier);
-
-            // Aplicar modificadores
-            if (modifierKeyCode != 0)
-            {
-                keybd_event(modifierKeyCode, 0, KEYEVENTF_KEYDOWN, 0); // Presionar modificador
-            }
-
-            // Simular la pulsación de la tecla
-            keybd_event(virtualKeyCode, 0, KEYEVENTF_KEYDOWN, 0); // Presionar la tecla
-            Thread.Sleep(100); // Simular una pequeña espera
-            keybd_event(virtualKeyCode, 0, KEYEVENTF_KEYUP, 0);   // Soltar la tecla
-
-            // Liberar modificadores
-            if (modifierKeyCode != 0)
-            {
-                keybd_event(modifierKeyCode, 0, KEYEVENTF_KEYUP, 0); // Soltar modificador
+                this.label_seconds.ForeColor = System.Drawing.Color.Black;
             }
         }
 
@@ -168,7 +168,7 @@ namespace KeyPressAutomation
             if (!isRunning)
             {
                 int interval;
-                if (int.TryParse(textBoxInterval.Text, out interval))
+                if (int.TryParse(textBoxInterval.Text, out interval) && interval > 0)
                 {
                     intervalInSeconds = interval;  // Guardar el intervalo ingresado
                     secondCounter = 0;  // Reiniciar el contador de segundos
@@ -181,7 +181,7 @@ namespace KeyPressAutomation
                 }
                 else
                 {
-                    MessageBox.Show("Por favor ingrese un intervalo válido.");
+                    MessageBox.Show("Por favor ingrese un intervalo válido mayor a 0.");
                 }
             }
         }
@@ -200,14 +200,9 @@ namespace KeyPressAutomation
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            // URL que se abrirá cuando el usuaro haga clic en el Label
-            string url = "https://dev-melvinrb.vercel.app/";
-
-            Process.Start(new ProcessStartInfo
-            {
-                FileName = url,
-                UseShellExecute = true
-            });
+            // URL que se abrirá cuando el usuario haga clic en el Label
+            string url = "https://dev-melvin.com";
+            Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true });
         }
-    }
+}
 }
